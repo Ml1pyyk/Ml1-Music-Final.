@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#090909">
+  <title>Ml1 Music</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">M</span><span>Ml1 <b>Music</b></span></div>
+    <button class="icon-btn" id="settingsBtn" aria-label="Settings">⚙</button>
+  </header>
+  <main>
+    <section class="page active" id="homePage">
+      <div class="greeting"><p class="eyebrow" data-i18n="welcome">ТВОЯ МУЗЫКА</p><h1 data-i18n="listen">Слушай своё.</h1></div>
+      <div class="hero">
+        <div><span class="pill">ML1 PLAY</span><h2 data-i18n="heroTitle">Твоя музыка<br>в одном месте</h2><p data-i18n="heroText">Слушай любимое и собирай свои плейлисты.</p><button class="hero-button" id="heroUpload" data-i18n="addMusic">Добавить музыку</button></div>
+        <div class="hero-disc">♪</div>
+      </div>
+      <div class="section-head"><h2 data-i18n="quickAccess">Быстрый доступ</h2></div>
+      <div class="quick-grid">
+        <button class="quick-card liked-card" data-go="library" data-tab-target="liked"><span>♥</span><b data-i18n="liked">Любимые</b></button>
+        <button class="quick-card upload-card" id="uploadShortcut"><span>＋</span><b data-i18n="yourFiles">Твои файлы</b></button>
+      </div>
+      <div class="section-head"><h2 data-i18n="recent">Недавно добавленные</h2><button class="text-btn" data-go="library" data-tab-target="files" data-i18n="all">Все</button></div>
+      <div id="homeTracks" class="track-list"></div>
+      <div class="section-head"><h2 data-i18n="madeForYou">Для тебя</h2></div>
+      <div id="recommendations" class="recommend-grid"></div>
+    </section>
+    <section class="page" id="searchPage">
+      <div class="page-title"><p class="eyebrow" data-i18n="discover">ОТКРЫВАЙ НОВОЕ</p><h1 data-i18n="search">Поиск</h1></div>
+      <div class="searchbox"><span>⌕</span><input id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Песни, исполнители..."></div>
+      <p class="hint" data-i18n="searchHint">Поиск работает по твоей библиотеке.</p>
+      <div id="searchResults" class="track-list"></div>
+    </section>
+    <section class="page" id="libraryPage">
+      <div class="page-title"><p class="eyebrow" data-i18n="yourCollection">ТВОЯ КОЛЛЕКЦИЯ</p><h1 data-i18n="library">Медиатека</h1></div>
+      <div class="library-tabs">
+        <button class="tab active" data-tab="playlists" data-i18n="playlists">Плейлисты</button>
+        <button class="tab" data-tab="liked" data-i18n="liked">Любимые</button>
+        <button class="tab" data-tab="files" data-i18n="yourFiles">Мои песни</button>
+      </div>
+      <div id="libraryContent"></div>
+      <button class="primary-btn create-btn" id="createPlaylist">＋ <span data-i18n="createPlaylist">Создать плейлист</span></button>
+    </section>
+    <section class="page" id="settingsPage">
+      <div class="page-title"><p class="eyebrow" data-i18n="personalize">ПОД СЕБЯ</p><h1 data-i18n="settings">Настройки</h1></div>
+      <div class="setting-group"><label data-i18n="language">Язык</label><div class="segmented"><button data-lang="ru" class="selected">Русский</button><button data-lang="en">English</button></div></div>
+      <div class="setting-group"><label data-i18n="appearance">Оформление</label><div class="segmented"><button data-theme="dark" class="selected" data-i18n="dark">Тёмная</button><button data-theme="black" data-i18n="black">Чёрная</button><button data-theme="light" data-i18n="white">Светлая</button></div></div>
+      <div class="setting-group"><label data-i18n="libraryTools">Библиотека</label><button class="setting-action" id="backupBtn" data-i18n="backup">Экспорт библиотеки</button><button class="setting-action" id="restoreBtn" data-i18n="restore">Импорт резервной копии</button><input id="backupInput" type="file" accept="application/json" hidden></div>
+      <div class="setting-group about"><b>Ml1 Music</b><span>Version 2.0.0 · Telegram Mini App</span><p data-i18n="aboutText">Музыка и обложки хранятся на этом устройстве.</p></div>
+    </section>
+  </main>
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="home"><span>⌂</span><small data-i18n="home">Главная</small></button>
+    <button class="nav-item" data-page="search"><span>⌕</span><small data-i18n="search">Поиск</small></button>
+    <button class="nav-item" data-page="library"><span>▤</span><small data-i18n="library">Медиатека</small></button>
+  </nav>
+  <div class="player hidden" id="player">
+    <div class="player-art" id="miniArt">♪</div><div class="player-meta" id="openPlayer"><b id="nowTitle">Ml1 Music</b><small id="nowArtist">Выбери трек</small></div>
+    <button id="playPause" class="play-btn" aria-label="Play">▶</button>
+    <audio id="audio" preload="metadata"></audio>
+  </div>
+</div>
+
+<div class="full-player" id="fullPlayer">
+  <div class="full-top"><button class="icon-btn" id="closePlayer">⌄</button><span data-i18n="nowPlaying">СЕЙЧАС ИГРАЕТ</span><button class="icon-btn" id="openQueue">☷</button></div>
+  <div class="cover-wrap"><div class="big-cover" id="bigCover">♪</div></div>
+  <div class="full-meta"><div><h2 id="fullTitle">Ml1 Music</h2><p id="fullArtist">Выбери трек</p></div><button class="like-big" id="fullLike">♡</button></div>
+  <div class="progress-wrap"><input id="seek" type="range" min="0" max="1000" value="0"><div class="time-row"><span id="currentTime">0:00</span><span id="duration">0:00</span></div></div>
+  <div class="controls">
+    <button id="shuffleBtn" class="mode-btn">⤨</button><button id="prevBtn" class="skip-btn">⏮</button><button id="fullPlay" class="main-play">▶</button><button id="nextBtn" class="skip-btn">⏭</button><button id="repeatBtn" class="mode-btn">↻</button>
+  </div>
+  <div class="full-bottom"><button id="addToPlaylistBtn" class="text-btn" data-i18n="addToPlaylist">＋ В плейлист</button><button id="deleteCurrentBtn" class="text-btn danger hidden" data-i18n="deleteTrack">Удалить песню</button></div>
+</div>
+
+<input id="fileInput" type="file" accept="audio/*" multiple hidden>
+<input id="coverInput" type="file" accept="image/*" hidden>
+<dialog id="playlistDialog"><form method="dialog"><h2 data-i18n="newPlaylist">Новый плейлист</h2><input id="playlistName" maxlength="40" placeholder="Название плейлиста" required><div class="dialog-actions"><button class="secondary-btn" value="cancel" data-i18n="cancel">Отмена</button><button class="primary-btn" id="savePlaylist" value="default" data-i18n="create">Создать</button></div></form></dialog>
+<dialog id="addDialog"><form method="dialog"><h2 data-i18n="choosePlaylist">Выбери плейлист</h2><div id="playlistChoices"></div><div class="dialog-actions"><button class="secondary-btn" value="cancel" data-i18n="cancel">Отмена</button></div></form></dialog>
+<dialog id="queueDialog"><form method="dialog"><h2 data-i18n="queue">Очередь</h2><div id="queueList"></div><div class="dialog-actions"><button class="primary-btn" value="close">OK</button></div></form></dialog>
+<script src="/app.js"></script>
+</body>
+</html>
